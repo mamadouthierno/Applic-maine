@@ -212,7 +212,7 @@ def contact():
                 
                 # Formulaire
                 st.markdown("<div class='input-field'>", unsafe_allow_html=True)
-                name = st.text_input("Nom Complet *", placeholder="Dr. Jean Dupont")
+                name = st.text_input("Nom Complet *", placeholder="Dr. Mamadou BOUSSO")
                 st.markdown("</div>", unsafe_allow_html=True)
                 
                 st.markdown("<div class='input-field'>", unsafe_allow_html=True)
@@ -249,7 +249,7 @@ def contact():
                     <div>
                         <h4 style="margin: 0; color: var(--secondary);">Téléphone</h4>
                         <p style="margin: 0.3rem 0 0; color: #666;">
-                            +221 77 808 09 42<br>
+                            +221 77 135 48 03<br>
                             Urgences 24/7
                         </p>
                     </div>
@@ -307,7 +307,7 @@ def contact():
         st.markdown("""
             <div class="footer">
                 <p>
-                    © 2025 <strong>MED-AI</strong> | Propulsé avec ❤️ par <strong>Ahmed Sefdine </strong><br>
+                    © 2025 <strong>MED-AI</strong> | Propulsé avec ❤️ par <strong>Mamadou Thierno FAYE </strong><br>
                     Connectez-vous avec moi :
                     <a href="https://www.linkedin.com/in/mamadouthierno" target="_blank" class="footer-icon">🔗 LinkedIn</a>
                     <a href="https://twitter.com/mamadouthierno" target="_blank" class="footer-icon">🐦 Twitter</a>
