@@ -144,8 +144,8 @@ def accueil():
         <!-- CONTENU HTML -->
         <div class="custom-bg">
             <h1 class="main-title">L'Innovation Médicale<br>Redéfinie</h1>
-            <p class="sub-title">
-                <h2 Plateforme IA de pointe pour la lutte contre les cancers digestifs</h2>
+            <p class="sub-title"
+                <h2 Plateforme IA de pointe pour la lutte contre les cancers digestifs</h2>>
             </p>
             <button class="custom-btn">Découvrir la Technologie</button>
         </div>
