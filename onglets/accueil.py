@@ -34,7 +34,7 @@ def accueil():
 
             /* TITRE PRINCIPAL */
             .main-title {{
-                font-size: 20rem;  /* 🔁 AUGMENTE LA TAILLE ICI */
+                font-size: 24rem;  /* 🔁 AUGMENTE LA TAILLE ICI */
                 font-weight: bold;
                 color: green;     /* 🔁 COULEUR DU TITRE PRINCIPAL */
                 margin-bottom: 6rem;
@@ -43,7 +43,7 @@ def accueil():
 
             /* SOUS-TITRE */
             .sub-title {{
-                font-size: 4rem;  /* 🔁 AUGMENTE OU RÉDUIS ICI */
+                font-size: 6rem;  /* 🔁 AUGMENTE OU RÉDUIS ICI */
                 color: green;     /* 🔁 COULEUR DU SOUS-TITRE */
                 margin-bottom: 2rem;
                 animation: fadeInSubTitle 4s ease-in-out;
@@ -88,7 +88,7 @@ def accueil():
                 animation: slideInUp 2s ease-in-out;
             }}
             .impression-section h2 {{
-                font-size: 3rem;
+                font-size: 4rem;
                 color: #1e3a8a;
                 margin-bottom: 2rem;
             }}
@@ -145,7 +145,7 @@ def accueil():
         <div class="custom-bg">
             <h1 class="main-title">L'Innovation Médicale<br>Redéfinie</h1>
             <p class="sub-title">
-                Plateforme IA de pointe pour la lutte contre les cancers digestifs
+                <h2 Plateforme IA de pointe pour la lutte contre les cancers digestifs</h2>
             </p>
             <button class="custom-btn">Découvrir la Technologie</button>
         </div>
