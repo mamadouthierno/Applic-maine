@@ -32,22 +32,24 @@ def accueil():
             }}
 
             /* TITRE PRINCIPAL EN VERT */
-            .main-title {{
-                font-size: 4rem;
-                font-weight: bold;
-                color: green;
-                margin-bottom: 2rem;
-                animation: fadeInTitle 3s ease-in-out;
-            }}
+st.markdown(f"""
+    <style>
+        /* TITRE PRINCIPAL */
+        .main-title {{
+            font-size: 24rem;
+            font-weight: bold;
+            color: green;
+            margin-bottom: 6rem;
+            animation: fadeInTitle 3s ease-in-out;
+        }}
 
-            /* SOUS-TITRE EN VERT */
-            .sub-title {{
-                font-size: 2rem;
-                font-weight: bold;
-                color: green;
-                margin-bottom: 1.5rem;
-                animation: fadeInSubTitle 4s ease-in-out;
-            }}
+        /* NOUVEAU : DEUXIÈME TITRE */
+        .second-title {{
+            font-size: 6rem;
+            color: green;
+            margin-bottom: 2rem;
+            animation: fadeInSubTitle 4s ease-in-out;
+        }}
 
             .custom-btn {{
                 padding: 10px 25px;
