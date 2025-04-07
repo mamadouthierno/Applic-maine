@@ -1,13 +1,14 @@
 import streamlit as st
-from onglets import accueil, analyse_descriptive, modelisation, a_propos, contact
 
-# Configuration de la page
+# ⚠️ Configuration de la page — à placer absolument en tout premier
 st.set_page_config(
-    page_title="Ushahidi",
+    page_title="Gastric",
     page_icon="⚕️",
     layout="wide",
     initial_sidebar_state="expanded"
 )
+
+from onglets import accueil, analyse_descriptive, modelisation, a_propos, contact
 
 # Dictionnaire des pages
 PAGES = {
