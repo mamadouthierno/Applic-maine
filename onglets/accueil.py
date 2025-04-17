@@ -115,7 +115,7 @@ def accueil():
 
         <!-- CONTENU HTML -->
         <div class="custom-bg">
-            <h1 class="main-title">L'Innovation Médicale Redéfinie</h1>
+            <h1 class="main-title">L'Ère Nouvelle de la Médecine Intelligente</h1>
             <h2 class="sub-title">Plateforme IA de pointe pour la lutte contre les cancers digestifs</h2>
             <button class="custom-btn">Découvrir la Technologie</button>
         </div>
@@ -124,6 +124,13 @@ def accueil():
         <div class="impression-section">
             <h2>Un Futur Prometteur avec l'IA</h2>
             <p>Notre plateforme révolutionne l'approche diagnostique et thérapeutique des cancers digestifs, en vous offrant des prédictions de survie précises et des solutions innovantes basées sur l'intelligence artificielle.</p>
+            <p>Notre plateforme révolutionne la prise en charge des cancers digestifs.</p>
+        <ul>
+          <li>Prédictions de survie ultra-précises</li>
+          <li>Solutions thérapeutiques innovantes</li>
+          <li>Approche personnalisée par IA</li>
+        </ul>
+<p><em>L’avenir de l’oncologie digestive commence ici.</em></p>
             <button class="highlight-btn">Explorez Notre Solution</button>
         </div>
     """, unsafe_allow_html=True)
