@@ -195,13 +195,13 @@ def contact():
         
         # En-tête
 
-         st.markdown( """
-        <div style="background-color: #4CAF50; padding: 30px; border-radius: 10px;">
-            <h1 style="color: white;">📬 Contacte L'équipe Médicale</h1>
-            <p style="color: white; font-size: 18px;">
-                Une question ? Un projet ? Nous répondons dans les 24h.
-            </p>
-        </div>
+        st.markdown("""
+            <div class='contact-header'>
+                <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">📬 Contacte L'équipe Médicale</h1>
+                <p style="font-size: 1.2rem; opacity: 0.9;">
+                    Une question ? Un projet ? Nous répondons dans les 24h
+                </p>
+            </div>
         """, unsafe_allow_html=True)
 
         # Grille principale
