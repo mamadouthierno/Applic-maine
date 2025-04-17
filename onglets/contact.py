@@ -195,9 +195,7 @@ def contact():
         
         # En-tête
 
-
-                st.markdown(
-        """
+         st.markdown( """
         <div style="background-color: #4CAF50; padding: 30px; border-radius: 10px;">
             <h1 style="color: white;">📬 Contacte L'équipe Médicale</h1>
             <p style="color: white; font-size: 18px;">
