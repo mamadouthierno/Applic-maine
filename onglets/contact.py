@@ -308,7 +308,7 @@ def contact():
         st.markdown("""
             <div class="footer">
                 <p>
-                    © 2025 <strong>MED-AI</strong> | Propulsé avec ❤️ par <strong>Mamadou Thierno FAYA </strong><br>
+                    © 2025 <strong>MEDCINE-AI</strong> | Propulsé avec ❤️ par <strong>Mamadou Thierno FAYA </strong><br>
                     Connectez-vous avec moi :
                     <a href="https://www.linkedin.com/in/mamadouthierno" target="_blank" class="footer-icon">🔗 LinkedIn</a>
                     <a href="https://twitter.com/mamadouthierno" target="_blank" class="footer-icon">🐦 Twitter</a>
