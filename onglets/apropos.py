@@ -154,10 +154,10 @@ def a_propos():
     st.markdown("## Équipe de Recherche", unsafe_allow_html=True)
     cols = st.columns(3)
     team_members = [
-        {"photo": "assets/team/aba.jpeg", "name": "Pr. Mamadou BOUSSO", "role": "Maitre conferencier"},
-        {"photo": "assets/team/sy.jpeg", "name": "Dr. Mouhamad M. ALLAYA", "role": "Prof Data Scientist"},
-        {"photo": "assets/team/sefdine.jpeg", "name": "Pr Dame SAMB", "role": "Maitre conference"},
-        {"photo": "assets/team/sefdine.jpeg", "name": "M. Mamadou Thierno FAYE", "role": "Ingénieur Data Scientist"}
+        {"photo": "assets/team/bousso.jpeg", "name": "Pr. Mamadou BOUSSO", "role": "Maitre conferencier"},
+        {"photo": "assets/team/allaya.jpeg", "name": "Dr. Mouhamad M. ALLAYA", "role": "Prof Data Scientist"},
+        {"photo": "assets/team/samb.jpeg", "name": "Pr Dame SAMB", "role": "Maitre conference"},
+        {"photo": "assets/team/faye.jpeg", "name": "M. Mamadou Thierno FAYE", "role": "Ingénieur Data Scientist"}
     ]
     
     for col, member in zip(cols, team_members):
