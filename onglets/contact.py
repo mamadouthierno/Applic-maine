@@ -196,9 +196,9 @@ def contact():
         # En-tête
         st.markdown("""
             <div class='contact-header'>
-                <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">📬 Contactez Notre Équipe Médicale</h1>
+                <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">📬 Contacte de L'équipe Médicale</h1>
                 <p style="font-size: 1.2rem; opacity: 0.9;">
-                    Une question ? Un projet ? Nous répondons sous 24h
+                    Une question ? Un projet ? Nous répondons sur les 24h
                 </p>
             </div>
         """, unsafe_allow_html=True)
@@ -236,7 +236,7 @@ def contact():
                 <div class='info-item'>
                     <div style="margin-right: 1rem;">🏥</div>
                     <div>
-                        <h4 style="margin: 0; color: var(--secondary);">Clinique MED-AI</h4>
+                        <h4 style="margin: 0; color: var(--secondary);">Clinique MEDCINE-AI</h4>
                         <p style="margin: 0.3rem 0 0; color: #666;">
                             123 Rue de la Santé<br>
                             Dakar, Sénégal
@@ -283,7 +283,7 @@ def contact():
                                 <div style="font-size: 2rem; margin-right: 1rem;">✅</div>
                                 <div>
                                     <h3 style="margin: 0; color: var(--primary);">Message envoyé !</h3>
-                                    <p style="margin: 0.3rem 0 0; color: #666;">Nous vous répondrons dans les 24 heures</p>
+                                    <p style="margin: 0.3rem 0 0; color: #666;">La  répondrons sera dans les 24 heures</p>
                                 </div>
                             </div>
                         """, unsafe_allow_html=True)
