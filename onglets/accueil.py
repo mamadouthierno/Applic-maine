@@ -120,20 +120,18 @@ def accueil():
             <button class="custom-btn">Découvrir la Technologie</button>
         </div>
 
-        <!-- SECTION IMPRESSIONNANTE -->
-        <div class="impression-section">
-            <h2>Un Futur Prometteur avec l'IA</h2>
-            <p>Notre plateforme révolutionne l'approche diagnostique et thérapeutique des cancers digestifs, en vous offrant des prédictions de survie précises et des solutions innovantes basées sur l'intelligence artificielle.</p>
-            <p>Notre plateforme révolutionne la prise en charge des cancers digestifs.</p>
-        <ul>
-          <li>Prédictions de survie ultra-précises</li>
-          <li>Solutions thérapeutiques innovantes</li>
-          <li>Approche personnalisée par IA</li>
-        </ul>
-<p><em>L’avenir de l’oncologie digestive commence ici.</em></p>
-            <button class="highlight-btn">Explorez Notre Solution</button>
-        </div>
-    """, unsafe_allow_html=True)
 
-if __name__ == "__main__":
-    accueil()
+        <section>
+  <h2>Révolution dans la prise en charge des cancers digestifs</h2>
+  <p>Notre plateforme IA transforme l'oncologie digestive avec :</p>
+  
+  <ul class="benefits">
+    <li><i class="icon-check"></i> Modèles prédictifs de survie certifiés</li>
+    <li><i class="icon-check"></i> Protocoles thérapeutiques optimisés par IA</li>
+    <li><i class="icon-check"></i> Profilage moléculaire personnalisé</li>
+  </ul>
+
+  <div class="call-to-action">
+    <p>Rejoignez la médecine oncologique de demain</p>
+  </div>
+</section>
