@@ -1,8 +1,8 @@
 from PIL import Image
 import streamlit as st
 import os
-from utils import LOGO_PATH
 import base64
+from utils import LOGO_PATH  # Assure-toi que ce fichier existe et est correctement structuré
 
 # Fonction pour convertir une image en base64
 def get_base64_bg(path):
@@ -31,7 +31,6 @@ def accueil():
                 box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
             }}
 
-            /* TITRE PRINCIPAL EN VERT */
             .main-title {{
                 font-size: 4rem;
                 font-weight: bold;
@@ -40,7 +39,6 @@ def accueil():
                 animation: fadeInTitle 3s ease-in-out;
             }}
 
-            /* SOUS-TITRE EN VERT */
             .sub-title {{
                 font-size: 2rem;
                 font-weight: bold;
@@ -69,10 +67,12 @@ def accueil():
                 0% {{ opacity: 0; transform: translateY(-50px); }}
                 100% {{ opacity: 1; transform: translateY(0); }}
             }}
+
             @keyframes fadeInSubTitle {{
                 0% {{ opacity: 0; transform: translateY(50px); }}
                 100% {{ opacity: 1; transform: translateY(0); }}
             }}
+
             @keyframes fadeInButton {{
                 0% {{ opacity: 0; transform: scale(0.8); }}
                 100% {{ opacity: 1; transform: scale(1); }}
@@ -84,16 +84,19 @@ def accueil():
                 text-align: center;
                 animation: slideInUp 2s ease-in-out;
             }}
+
             .impression-section h2 {{
                 font-size: 2.5rem;
                 color: green;
                 margin-bottom: 2rem;
             }}
+
             .impression-section p {{
                 font-size: 1.2rem;
                 color: #334155;
                 margin-bottom: 2rem;
             }}
+
             .highlight-btn {{
                 padding: 12px 30px;
                 font-size: 1.3rem;
@@ -104,37 +107,48 @@ def accueil():
                 cursor: pointer;
                 transition: all 0.3s ease;
             }}
+
             .highlight-btn:hover {{
                 background: #1a5fa4;
             }}
+
             @keyframes slideInUp {{
                 0% {{ opacity: 0; transform: translateY(50px); }}
                 100% {{ opacity: 1; transform: translateY(0); }}
             }}
+
+            .benefits {{
+                list-style: none;
+                padding-left: 0;
+            }}
+
+            .benefits li::before {{
+                content: "✔️ ";
+                color: green;
+                margin-right: 5px;
+            }}
         </style>
 
-        <!-- CONTENU HTML -->
+        <!-- Bloc principal avec image de fond -->
         <div class="custom-bg">
             <h1 class="main-title">L'Ère Nouvelle de la Médecine Intelligente</h1>
             <h2 class="sub-title">Plateforme IA de pointe pour la lutte contre les cancers digestifs</h2>
             <button class="custom-btn">Découvrir la Technologie</button>
         </div>
 
-
-        <section>
-  <h2>Révolution dans la prise en charge des cancers digestifs</h2>
-  <p>Notre plateforme IA transforme l'oncologie digestive avec :</p>
-  
-  <ul class="benefits">
-    <li><i class="icon-check"></i> Modèles prédictifs de survie certifiés</li>
-    <li><i class="icon-check"></i> Protocoles thérapeutiques optimisés par IA</li>
-    <li><i class="icon-check"></i> Profilage moléculaire personnalisé</li>
-  </ul>
-
-  <div class="call-to-action">
-    <p>Rejoignez la médecine oncologique de demain</p>
-  </div>
-</section>
+        <!-- Section informative -->
+        <section class="impression-section">
+            <h2>Révolution dans la prise en charge des cancers digestifs</h2>
+            <p>Notre plateforme IA transforme l'oncologie digestive avec :</p>
+            <ul class="benefits">
+                <li>Modèles prédictifs de survie certifiés</li>
+                <li>Protocoles thérapeutiques optimisés par IA</li>
+                <li>Profilage moléculaire personnalisé</li>
+            </ul>
+            <div class="call-to-action">
+                <p>Rejoignez la médecine oncologique de demain</p>
+            </div>
+        </section>
     """, unsafe_allow_html=True)
 
 if __name__ == "__main__":
