@@ -135,3 +135,7 @@ def accueil():
     <p>Rejoignez la médecine oncologique de demain</p>
   </div>
 </section>
+    """, unsafe_allow_html=True)
+
+if __name__ == "__main__":
+    accueil()
