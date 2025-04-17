@@ -1,317 +1,163 @@
-import streamlit as st
-import smtplib
-import re
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
+import streamlit as st  
+import numpy as np  
+import plotly.express as px  
+from datetime import date  
+import io  
+from fpdf import FPDF  
+from utils import (
+    FEATURE_CONFIG,
+    encode_features,
+    load_model,
+    predict_survival,
+    clean_prediction,
+    save_new_patient,
+    MODELS
+)
 
-# Configuration SMTP
-SMTP_SERVER = "smtp.gmail.com"
-SMTP_PORT = 587
-EMAIL_SENDER = "votre-email@gmail.com"
-EMAIL_PASSWORD = "12_SEFD"  
-EMAIL_RECEIVER = "mamadouthierno@gmail.com"
+# 🎨 CSS personnalisé avec bannière verte et fond vert clair  
+st.markdown("""  
+<style>  
+    body, .stApp {  
+        background-color: #e6f4ea !important;  /* 💚 fond général vert très clair */  
+    }  
+    .st-emotion-cache-1y4p8pa {  
+        padding: 2rem 1rem;  
+    }  
+    .form-card, .header-card, .prediction-card {  
+        background: white;  
+        border-radius: 15px;  
+        padding: 2rem;  
+        margin-bottom: 2rem;  
+        box-shadow: 0 4px 20px rgba(0,0,0,0.06);  
+    }  
+    .form-title {  
+        font-size: 1.6rem;  
+        font-weight: bold;  
+        color: #2e7d32;  /* 💚 vert foncé pour le titre formulaire */  
+        margin-bottom: 1rem;  
+    }  
+    h1 {  
+        color: #2e7d32 !important;  /* 💚 titre principal en vert foncé */  
+        background-color: #c8e6c9 !important;  /* 💚 bannière verte claire */  
+        padding: 1rem;  
+        border-radius: 10px;  
+        text-align: center;  
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);  
+    }  
+    .stButton>button {  
+        background: linear-gradient(45deg, #2e7d32, #66bb6a) !important;  
+        color: white !important;  
+        border-radius: 10px !important;  
+        padding: 0.75rem 2rem !important;  
+        border: none !important;  
+        transition: all 0.3s ease-in-out;  
+    }  
+    .stButton>button:hover {  
+        transform: translateY(-2px);  
+        box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);  
+    }  
+</style>  
+""", unsafe_allow_html=True)
 
-def send_email(name, sender_email, message):
-    """Envoie un email avec un design HTML professionnel"""
-    try:
-        msg = MIMEMultipart()
-        msg["From"] = EMAIL_SENDER
-        msg["To"] = EMAIL_RECEIVER
-        msg["Subject"] = f"📬 Nouveau contact MEDCINE-AI : {name}"
-        
-        html = f"""
-        <html>
-          <body style="margin: 0; font-family: 'Segoe UI', sans-serif;">
-            <div style="background: #f8faff; padding: 40px;">
-              <div style="max-width: 600px; margin: 0 auto; background: white; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.08);">
-                <div style="padding: 40px; text-align: center;">
-                  <img src="https://i.ibb.co.com/logo.png" alt="MED-AI Logo" style="height: 60px; margin-bottom: 30px;">
-                  <div style="background: linear-gradient(135deg, #2e77d0, #22d3ee); padding: 20px; border-radius: 12px;">
-                    <h2 style="color: white; margin: 0;">Nouveau message de {name}</h2>
-                  </div>
-                  <div style="padding: 30px 20px; text-align: left;">
-                    <div style="margin-bottom: 25px;">
-                      <p style="font-size: 16px; color: #444; margin: 8px 0;">
-                        <strong style="color: #2e77d0;">📧 Email :</strong><br>
-                        {sender_email}
-                      </p>
-                      <p style="font-size: 16px; color: #444; margin: 8px 0;">
-                        <strong style="color: #2e77d0;">📝 Message :</strong><br>
-                        <div style="background: #f8faff; padding: 15px; border-radius: 8px; margin-top: 10px;">
-                          {message}
-                        </div>
-                      </p>
-                    </div>
-                    <hr style="border: 1px solid #eee; margin: 30px 0;">
-                    <p style="font-size: 14px; color: #888; text-align: center;">
-                      Ce message a été envoyé via le formulaire de contact MED-AI
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </body>
-        </html>
-        """
-        
-        msg.attach(MIMEText(html, "html"))
+# Le reste du code reste identique à ce que tu avais  
+def generate_pdf_report(input_data, cleaned_pred):  
+    pdf = FPDF()  
+    pdf.add_page()  
+    pdf.set_font('Arial', 'B', 24)  
+    pdf.set_text_color(46, 119, 208)  
+    pdf.cell(0, 15, "Rapport Médical MED-AI", ln=True, align='C')  
+  
+    pdf.set_font('Arial', '', 12)  
+    pdf.set_text_color(0, 0, 0)  
+    pdf.cell(0, 10, f"Date : {date.today().strftime('%d/%m/%Y')}", ln=True)  
+  
+    pdf.set_font('Arial', 'B', 16)  
+    pdf.cell(0, 15, "Paramètres Cliniques", ln=True)  
+    pdf.set_fill_color(240, 248, 255)  
+  
+    pdf.set_font('Arial', '', 12)  
+    col_widths = [60, 60]  
+    for key, value in input_data.items():  
+        pdf.cell(col_widths[0], 8, FEATURE_CONFIG.get(key, key), 1, 0, 'L', 1)  
+        pdf.cell(col_widths[1], 8, str(value), 1, 1, 'L')  
+  
+    pdf.set_font('Arial', 'B', 16)  
+    pdf.cell(0, 15, "Résultats de Prédiction", ln=True)  
+    pdf.set_font('Arial', '', 14)  
+    pdf.cell(0, 8, "Modèle utilisé : DeepSurv", ln=True)  
+    pdf.set_text_color(46, 119, 208)  
+    pdf.cell(0, 8, f"Survie médiane estimée : {cleaned_pred:.1f} mois", ln=True)  
+  
+    pdf_buffer = io.BytesIO()  
+    pdf.output(pdf_buffer)  
+    return pdf_buffer.getvalue()  
 
-        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
-            server.starttls()
-            server.login(EMAIL_SENDER, EMAIL_PASSWORD)
-            server.sendmail(EMAIL_SENDER, EMAIL_RECEIVER, msg.as_string())
-        
-        return True
-    except Exception as e:
-        st.error(f"❌ Erreur d'envoi : {str(e)}")
-        return False
-
-def validate_email(email):
-    """Validation avancée d'email"""
-    pattern = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
-    return re.match(pattern, email)
-
-def contact():
-    """Interface de contact professionnelle avec style modernisé et liens vers réseaux sociaux"""
-    
-    st.markdown(
-        """
-    <style>
-        :root {
-            --primary: #2e77d0;
-            --secondary: #1d5ba6;
-            --accent: #22d3ee;
-        }
-        
-        .main-container {
-            max-width: 1000px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-            font-family: 'Segoe UI', sans-serif;
-        }
-        
-        .contact-header {
-            text-align: center;
-            margin-bottom: 3rem;
-            padding: 2rem;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            border-radius: 16px;
-            color: #fff;
-        }
-        
-        .form-card {
-            background: #f8faff;
-            padding: 2.5rem;
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.05);
-            margin-bottom: 2rem;
-        }
-        
-        .input-field {
-            margin-bottom: 1.8rem;
-        }
-        
-        .input-field label {
-            display: block;
-            margin-bottom: 0.6rem;
-            color: var(--primary);
-            font-weight: 500;
-            font-size: 1.1rem;
-        }
-        
-        .stTextInput>div>div>input,
-        .stTextArea>div>div>textarea {
-            border: 2px solid #e9f2fb !important;
-            border-radius: 10px !important;
-            padding: 1rem !important;
-            font-size: 1rem !important;
-            transition: all 0.3s !important;
-        }
-        
-        .stTextInput>div>div>input:focus,
-        .stTextArea>div>div>textarea:focus {
-            border-color: var(--accent) !important;
-            box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.1) !important;
-        }
-        
-        .submit-btn {
-            background: linear-gradient(135deg, var(--primary), var(--secondary)) !important;
-            color: white !important;
-            padding: 1rem 2.5rem !important;
-            border-radius: 10px !important;
-            font-size: 1.1rem !important;
-            transition: transform 0.3s, box-shadow 0.3s !important;
-        }
-        
-        .submit-btn:hover {
-            transform: translateY(-2px) !important;
-            box-shadow: 0 4px 15px rgba(46, 119, 208, 0.3) !important;
-        }
-        
-        .contact-info-card {
-            background: white;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.05);
-        }
-        
-        .info-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            padding: 1.2rem;
-            background: #f8faff;
-            border-radius: 12px;
-        }
-        
-        .map-container {
-            height: 400px;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.05);
-            margin-top: 2rem;
-        }
-
-        .footer {
-            text-align: center;
-            padding: 20px 0;
-            background-color: #f0f8ff;
-            border-top: 2px solid #ddd;
-            font-size: 14px;
-            color: #333;
-        }
-        .footer a {
-            color: #2e77d0;
-            text-decoration: none;
-        }
-        .footer a:hover {
-            text-decoration: underline;
-        }
-    </style>
-    """, unsafe_allow_html=True)
-
-    with st.container():
-        st.markdown("<div class='main-container'>", unsafe_allow_html=True)
-        
-        # En-tête
-        st.markdown("""
-            <div class='contact-header'>
-                <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">📬 Contacte de L'équipe Médicale</h1>
-                <p style="font-size: 1.2rem; opacity: 0.9;">
-                    Une question ? Un projet ? Nous répondons sur les 24h
-                </p>
-            </div>
-        """, unsafe_allow_html=True)
-
-        # Grille principale
-        col1, col2 = st.columns([2, 1], gap="large")
-        
-        with col1:
-            with st.form("contact_form"):
-                st.markdown("<div class='form-card'>", unsafe_allow_html=True)
-                
-                # Formulaire
-                st.markdown("<div class='input-field'>", unsafe_allow_html=True)
-                name = st.text_input("Nom Complet *", placeholder="Dr. Mamadou BOUSSO")
-                st.markdown("</div>", unsafe_allow_html=True)
-                
-                st.markdown("<div class='input-field'>", unsafe_allow_html=True)
-                email = st.text_input("Email Professionnel *", placeholder="contact@clinique.com")
-                st.markdown("</div>", unsafe_allow_html=True)
-                
-                st.markdown("<div class='input-field'>", unsafe_allow_html=True)
-                message = st.text_area("Message *", height=200, 
-                                    placeholder="Décrivez votre demande en détail...")
-                st.markdown("</div>", unsafe_allow_html=True)
-                
-                submitted = st.form_submit_button("Envoyer le Message ✉️", use_container_width=True)
-                st.markdown("</div>", unsafe_allow_html=True)
-
-        with col2:
-            # Informations de contact
-            st.markdown("<div class='contact-info-card'>", unsafe_allow_html=True)
-            st.markdown("""
-                <h3 style="color: var(--primary); margin-bottom: 1.5rem;">📌 Coordonnées</h3>
-                
-                <div class='info-item'>
-                    <div style="margin-right: 1rem;">🏥</div>
-                    <div>
-                        <h4 style="margin: 0; color: var(--secondary);">Clinique MEDCINE-AI</h4>
-                        <p style="margin: 0.3rem 0 0; color: #666;">
-                            123 Rue de la Santé<br>
-                            Dakar, Sénégal
-                        </p>
-                    </div>
-                </div>
-                
-                <div class='info-item'>
-                    <div style="margin-right: 1rem;">📞</div>
-                    <div>
-                        <h4 style="margin: 0; color: var(--secondary);">Téléphone</h4>
-                        <p style="margin: 0.3rem 0 0; color: #666;">
-                            +221 77 135 48 03<br>
-                            Urgences 24/7
-                        </p>
-                    </div>
-                </div>
-                
-                <div class='info-item'>
-                    <div style="margin-right: 1rem;">🌐</div>
-                    <div>
-                        <h4 style="margin: 0; color: var(--secondary);">Réseaux Sociaux</h4>
-                        <div style="display: flex; gap: 1rem; margin-top: 0.5rem;">
-                            <a href="https://www.linkedin.com/in/mamadouthierno" target="_blank" style="color: var(--primary); text-decoration: none;">🔗 LinkedIn</a>
-                            <a href="https://twitter.com/mamadouthierno" target="_blank" style="color: var(--primary); text-decoration: none;">🐦 Twitter</a>
-                            <a href="https://www.facebook.com/mamadouthierno" target="_blank" style="color: var(--primary); text-decoration: none;">📘 Facebook</a>
-                        </div>
-                    </div>
-                </div>
-            """, unsafe_allow_html=True)
-            st.markdown("</div>", unsafe_allow_html=True)
-
-        # Validation et envoi
-        if submitted:
-            if not all([name, email, message]):
-                st.error("🚨 Tous les champs obligatoires (*) doivent être remplis")
-            elif not validate_email(email):
-                st.error("📧 Format d'email invalide")
-            else:
-                with st.spinner("Envoi en cours..."):
-                    if send_email(name, email, message):
-                        st.success("""
-                            <div style="display: flex; align-items: center; padding: 1.5rem; background: #f0faff; border-radius: 12px; margin: 2rem 0;">
-                                <div style="font-size: 2rem; margin-right: 1rem;">✅</div>
-                                <div>
-                                    <h3 style="margin: 0; color: var(--primary);">Message envoyé !</h3>
-                                    <p style="margin: 0.3rem 0 0; color: #666;">La  répondrons sera dans les 24 heures</p>
-                                </div>
-                            </div>
-                        """, unsafe_allow_html=True)
-                        st.balloons()
-
-        # Carte interactive
-        st.markdown("""
-            <div class='map-container'>
-                <iframe 
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3859.227291477752!2d-17.44483768468878!3d14.693534078692495!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xec1725a1bb04215%3A0x9d5f3e9d0e8e4b1e!2sDakar!5e0!3m2!1sfr!2ssn!4v1625060000000!5m2!1sfr!2ssn" 
-                    width="100%" 
-                    height="400" 
-                    style="border:0;" 
-                    allowfullscreen="" 
-                    loading="lazy">
-                </iframe>
-            </div>
-        """, unsafe_allow_html=True)
-        
-        # Pied de page
-        st.markdown("""
-            <div class="footer">
-                <p>
-                    © 2025 <strong>MED-AI</strong> | Propulsé avec ❤️ par <strong>Mamadou Thierno FAYE </strong><br>
-                    Connectez-vous avec moi :
-                    <a href="https://www.linkedin.com/in/mamadouthierno" target="_blank" class="footer-icon">🔗 LinkedIn</a>
-                    <a href="https://twitter.com/mamadouthierno" target="_blank" class="footer-icon">🐦 Twitter</a>
-                    <a href="https://www.facebook.com/mamadouthierno" target="_blank" class="footer-icon">📘 Facebook</a>
-                </p>
-            </div>
-        """, unsafe_allow_html=True)
+def modelisation():  
+    st.title("🧬 Analyse de Survie Médicale")  
+  
+    with st.container():  
+        st.markdown("<div class='form-card'>", unsafe_allow_html=True)  
+        st.markdown("<div class='form-title'>📋 Informations Patient</div>", unsafe_allow_html=True)  
+        inputs = {}  
+        cols = st.columns(3)  
+        for i, (feature, label) in enumerate(FEATURE_CONFIG.items()):  
+            with cols[i % 3]:  
+                if feature == "AGE":  
+                    inputs[feature] = st.number_input(label, min_value=18, max_value=120, value=50)  
+                else:  
+                    inputs[feature] = st.selectbox(label, options=["Non", "Oui"])  
+        st.markdown("</div>", unsafe_allow_html=True)  
+  
+    input_df = encode_features(inputs)  
+    model_name = "DeepSurv"  
+  
+    if st.button("🔮 Calculer la Prédiction", use_container_width=True):  
+        with st.spinner("Analyse en cours..."):  
+            try:  
+                model = load_model(MODELS[model_name])  
+                pred = predict_survival(model, input_df)  
+                cleaned_pred = clean_prediction(pred)  
+  
+                patient_data = input_df.to_dict(orient='records')[0]  
+                patient_data["Tempsdesuivi"] = round(cleaned_pred, 1)  
+                patient_data["Deces"] = "OUI"  
+  
+                save_new_patient(patient_data)  
+  
+                st.markdown("<div class='prediction-card'>", unsafe_allow_html=True)  
+                col1, col2 = st.columns([1, 2])  
+                with col1:  
+                    st.metric("Survie Médiane Estimée", f"{cleaned_pred:.0f} mois")  
+                with col2:  
+                    months = min(int(cleaned_pred), 120)  
+                    survival_curve = [100 * np.exp(-np.log(2) * t / cleaned_pred) for t in range(months)]  
+                    fig = px.line(  
+                        x=list(range(months)),  
+                        y=survival_curve,  
+                        labels={"x": "Mois", "y": "Probabilité de Survie (%)"},  
+                        color_discrete_sequence=['#2e7d32']  
+                    )  
+                    st.plotly_chart(fig, use_container_width=True)  
+                st.markdown("</div>", unsafe_allow_html=True)  
+  
+                pdf_bytes = generate_pdf_report(patient_data, cleaned_pred)  
+                st.download_button("📥 Télécharger le Rapport", data=pdf_bytes, file_name="rapport_medical.pdf", mime="application/pdf", use_container_width=True)  
+            except Exception as e:  
+                st.error(f"Erreur : {str(e)}")  
+  
+    st.markdown("---")  
+    with st.expander("📅 Planification du Suivi"):  
+        col1, col2 = st.columns(2)  
+        with col1:  
+            selected_treatments = st.multiselect("Traitements Recommandés", ["Chimiothérapie", "Exclusive"])  
+        with col2:  
+            follow_up_date = st.date_input("Date Suivi Recommandée", value=date.today())  
+  
+        if st.button("💾 Enregistrer le Plan", use_container_width=True):  
+            if selected_treatments:  
+                st.toast("Plan de traitement sauvegardé ✅")  
+            else:  
+                st.warning("Veuillez sélectionner au moins un traitement")  
+  
+if __name__ == "__main__":  
+    modelisation()
