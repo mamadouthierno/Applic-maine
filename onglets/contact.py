@@ -14,17 +14,19 @@ from utils import (
     MODELS
 )
 
-# 🎨 CSS personnalisé avec bannière verte et fond vert clair  
+# CSS : Design du formulaire + modernisation  
 st.markdown("""  
 <style>  
-    body, .stApp {  
-        background-color: #e6f4ea !important;  /* 💚 fond général vert très clair */  
+    :root {  
+        --primary: #2e77d0;  
+        --secondary: #1d5ba6;  
+        --accent: #22d3ee;  
     }  
     .st-emotion-cache-1y4p8pa {  
         padding: 2rem 1rem;  
     }  
     .form-card, .header-card, .prediction-card {  
-        background: white;  
+        background: #f8f9fa;  
         border-radius: 15px;  
         padding: 2rem;  
         margin-bottom: 2rem;  
@@ -33,19 +35,11 @@ st.markdown("""
     .form-title {  
         font-size: 1.6rem;  
         font-weight: bold;  
-        color: #2e7d32;  /* 💚 vert foncé pour le titre formulaire */  
+        color: var(--primary);  
         margin-bottom: 1rem;  
     }  
-    h1 {  
-        color: #2e7d32 !important;  /* 💚 titre principal en vert foncé */  
-        background-color: #c8e6c9 !important;  /* 💚 bannière verte claire */  
-        padding: 1rem;  
-        border-radius: 10px;  
-        text-align: center;  
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);  
-    }  
     .stButton>button {  
-        background: linear-gradient(45deg, #2e7d32, #66bb6a) !important;  
+        background: linear-gradient(45deg, var(--primary), var(--secondary)) !important;  
         color: white !important;  
         border-radius: 10px !important;  
         padding: 0.75rem 2rem !important;  
@@ -54,12 +48,11 @@ st.markdown("""
     }  
     .stButton>button:hover {  
         transform: translateY(-2px);  
-        box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);  
+        box-shadow: 0 4px 15px rgba(46, 119, 208, 0.4);  
     }  
 </style>  
 """, unsafe_allow_html=True)
 
-# Le reste du code reste identique à ce que tu avais  
 def generate_pdf_report(input_data, cleaned_pred):  
     pdf = FPDF()  
     pdf.add_page()  
@@ -91,7 +84,7 @@ def generate_pdf_report(input_data, cleaned_pred):
     pdf_buffer = io.BytesIO()  
     pdf.output(pdf_buffer)  
     return pdf_buffer.getvalue()  
-
+  
 def modelisation():  
     st.title("🧬 Analyse de Survie Médicale")  
   
@@ -135,7 +128,7 @@ def modelisation():
                         x=list(range(months)),  
                         y=survival_curve,  
                         labels={"x": "Mois", "y": "Probabilité de Survie (%)"},  
-                        color_discrete_sequence=['#2e7d32']  
+                        color_discrete_sequence=['#2e77d0']  
                     )  
                     st.plotly_chart(fig, use_container_width=True)  
                 st.markdown("</div>", unsafe_allow_html=True)  
