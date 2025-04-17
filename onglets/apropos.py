@@ -156,7 +156,6 @@ def a_propos():
     team_members = [
         {"photo": "assets/team/bousso.jpeg", "name": "Pr. Mamadou BOUSSO", "role": "Maitre conferencier"},
         {"photo": "assets/team/allaya.jpeg", "name": "Dr. Mouhamad M. ALLAYA", "role": "Prof Statistique & Data Scientist"},
-        {"photo": "assets/team/samb.jpeg", "name": "Pr Dame SAMB", "role": "Maitre conference"},
         {"photo": "assets/team/faye.jpeg", "name": "M. Mamadou Thierno FAYE", "role": "Ingénieur Data Scientist"}
     ]
     
