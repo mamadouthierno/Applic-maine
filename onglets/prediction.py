@@ -14,7 +14,7 @@ from utils import (
     MODELS
 )
 
-# Style CSS personnalisé  
+# CSS : Design du formulaire + modernisation  
 st.markdown("""  
 <style>  
     :root {  
@@ -25,37 +25,33 @@ st.markdown("""
     .st-emotion-cache-1y4p8pa {  
         padding: 2rem 1rem;  
     }  
-    .header-card {  
-        background: rgba(255, 255, 255, 0.9);  
+    .form-card, .header-card, .prediction-card {  
+        background: #f8f9fa;  
         border-radius: 15px;  
         padding: 2rem;  
-        margin: 1rem 0;  
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);  
+        margin-bottom: 2rem;  
+        box-shadow: 0 4px 20px rgba(0,0,0,0.06);  
     }  
-    .prediction-card {  
-        background: linear-gradient(135deg, #f8fafc, #ffffff);  
-        border-left: 4px solid var(--primary);  
-        padding: 1.5rem;  
-        margin: 1rem 0;  
-    }  
-    .model-selector {  
-        border-radius: 12px !important;  
-        padding: 1rem !important;  
-        border: 2px solid var(--primary) !important;  
+    .form-title {  
+        font-size: 1.6rem;  
+        font-weight: bold;  
+        color: var(--primary);  
+        margin-bottom: 1rem;  
     }  
     .stButton>button {  
         background: linear-gradient(45deg, var(--primary), var(--secondary)) !important;  
         color: white !important;  
-        border-radius: 8px !important;  
-        padding: 0.8rem 2rem !important;  
-        transition: all 0.3s !important;  
+        border-radius: 10px !important;  
+        padding: 0.75rem 2rem !important;  
+        border: none !important;  
+        transition: all 0.3s ease-in-out;  
     }  
     .stButton>button:hover {  
         transform: translateY(-2px);  
-        box-shadow: 0 4px 15px rgba(46, 119, 208, 0.4) !important;  
+        box-shadow: 0 4px 15px rgba(46, 119, 208, 0.4);  
     }  
 </style>  
-""", unsafe_allow_html=True)  
+""", unsafe_allow_html=True)
 
 def generate_pdf_report(input_data, cleaned_pred):  
     pdf = FPDF()  
@@ -90,34 +86,24 @@ def generate_pdf_report(input_data, cleaned_pred):
     return pdf_buffer.getvalue()  
   
 def modelisation():  
-    st.title("📊 Prédiction Intelligente de Survie")  
+    st.title("🧬 Analyse de Survie Médicale")  
   
     with st.container():  
-        st.markdown("<div class='header-card'>", unsafe_allow_html=True)  
-        st.subheader("📋 Profil Patient")  
+        st.markdown("<div class='form-card'>", unsafe_allow_html=True)  
+        st.markdown("<div class='form-title'>📋 Informations Patient</div>", unsafe_allow_html=True)  
         inputs = {}  
         cols = st.columns(3)  
         for i, (feature, label) in enumerate(FEATURE_CONFIG.items()):  
             with cols[i % 3]:  
                 if feature == "AGE":  
-                    inputs[feature] = st.number_input(  
-                        label,   
-                        min_value=18,   
-                        max_value=120,   
-                        value=50,  
-                        help="Âge du patient en années"  
-                    )  
+                    inputs[feature] = st.number_input(label, min_value=18, max_value=120, value=50)  
                 else:  
-                    inputs[feature] = st.selectbox(  
-                        label,   
-                        options=["Non", "Oui"],  
-                        help="Présence de la caractéristique clinique"  
-                    )  
+                    inputs[feature] = st.selectbox(label, options=["Non", "Oui"])  
         st.markdown("</div>", unsafe_allow_html=True)  
   
     input_df = encode_features(inputs)  
-    # Utilisation directe du modèle DeepSurv
     model_name = "DeepSurv"  
+  
     if st.button("🔮 Calculer la Prédiction", use_container_width=True):  
         with st.spinner("Analyse en cours..."):  
             try:  
@@ -125,69 +111,44 @@ def modelisation():
                 pred = predict_survival(model, input_df)  
                 cleaned_pred = clean_prediction(pred)  
   
-                # Enrichissement des données à enregistrer  
                 patient_data = input_df.to_dict(orient='records')[0]  
                 patient_data["Tempsdesuivi"] = round(cleaned_pred, 1)  
-                patient_data["Deces"] = "OUI"  # Ici, vous pouvez adapter la saisie si besoin
+                patient_data["Deces"] = "OUI"  
   
-                # Enregistrement automatique du nouveau patient (et mise à jour du modèle)
                 save_new_patient(patient_data)  
   
-                with st.container():  
-                    st.markdown("<div class='prediction-card'>", unsafe_allow_html=True)  
-                    col1, col2 = st.columns([1, 2])  
-                    with col1:  
-                        st.metric(  
-                            label="**Survie Médiane Estimée**",   
-                            value=f"{cleaned_pred:.0f} mois",  
-                            help="Durée médiane de survie prédite"  
-                        )  
-                    with col2:  
-                        # Pour la courbe de survie, on utilise une décroissance exponentielle 
-                        # caractéristique d'une distribution exponentielle avec médiane 'cleaned_pred'
-                        months = min(int(cleaned_pred), 120)  
-                        survival_curve = [100 * np.exp(-np.log(2) * t / cleaned_pred) for t in range(months)]
-                        fig = px.line(  
-                            x=list(range(months)),  
-                            y=survival_curve,  
-                            labels={"x": "Mois", "y": "Probabilité de Survie (%)"},  
-                            color_discrete_sequence=['#2e77d0']  
-                        )  
-                        st.plotly_chart(fig, use_container_width=True)  
-                    st.markdown("</div>", unsafe_allow_html=True)  
-  
-                    # Génération et téléchargement du rapport PDF  
-                    pdf_bytes = generate_pdf_report(patient_data, cleaned_pred)  
-                    st.download_button(  
-                        label="📥 Télécharger le Rapport Complet",  
-                        data=pdf_bytes,  
-                        file_name="rapport_medical.pdf",  
-                        mime="application/pdf",  
-                        use_container_width=True  
+                st.markdown("<div class='prediction-card'>", unsafe_allow_html=True)  
+                col1, col2 = st.columns([1, 2])  
+                with col1:  
+                    st.metric("Survie Médiane Estimée", f"{cleaned_pred:.0f} mois")  
+                with col2:  
+                    months = min(int(cleaned_pred), 120)  
+                    survival_curve = [100 * np.exp(-np.log(2) * t / cleaned_pred) for t in range(months)]  
+                    fig = px.line(  
+                        x=list(range(months)),  
+                        y=survival_curve,  
+                        labels={"x": "Mois", "y": "Probabilité de Survie (%)"},  
+                        color_discrete_sequence=['#2e77d0']  
                     )  
+                    st.plotly_chart(fig, use_container_width=True)  
+                st.markdown("</div>", unsafe_allow_html=True)  
+  
+                pdf_bytes = generate_pdf_report(patient_data, cleaned_pred)  
+                st.download_button("📥 Télécharger le Rapport", data=pdf_bytes, file_name="rapport_medical.pdf", mime="application/pdf", use_container_width=True)  
             except Exception as e:  
-                st.error(f"Erreur de prédiction : {str(e)}")  
+                st.error(f"Erreur : {str(e)}")  
   
-    # Suivi thérapeutique  
     st.markdown("---")  
-    with st.expander("📅 Planification du Suivi Thérapeutique", expanded=True):  
-        treatment_cols = st.columns(2)  
-        with treatment_cols[0]:  
-            selected_treatments = st.multiselect(  
-                "Options Thérapeutiques",  
-                options=["Chimiothérapie", "Exclusive"],  
-                help="Sélectionner les traitements à comparer"  
-            )  
-        with treatment_cols[1]:  
-            follow_up_date = st.date_input(  
-                "Date de Suivi Recommandée",  
-                value=date.today(),  
-                help="Date préconisée pour le prochain examen"  
-            )  
+    with st.expander("📅 Planification du Suivi"):  
+        col1, col2 = st.columns(2)  
+        with col1:  
+            selected_treatments = st.multiselect("Traitements Recommandés", ["Chimiothérapie", "Exclusive"])  
+        with col2:  
+            follow_up_date = st.date_input("Date Suivi Recommandée", value=date.today())  
   
-        if st.button("💾 Enregistrer le Plan de Traitement", use_container_width=True):  
+        if st.button("💾 Enregistrer le Plan", use_container_width=True):  
             if selected_treatments:  
-                st.toast("Plan de traitement enregistré avec succès !")  
+                st.toast("Plan de traitement sauvegardé ✅")  
             else:  
                 st.warning("Veuillez sélectionner au moins un traitement")  
   
