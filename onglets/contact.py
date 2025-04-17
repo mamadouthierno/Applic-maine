@@ -17,7 +17,7 @@ def send_email(name, sender_email, message):
         msg = MIMEMultipart()
         msg["From"] = EMAIL_SENDER
         msg["To"] = EMAIL_RECEIVER
-        msg["Subject"] = f"📬 Nouveau contact MED-AI : {name}"
+        msg["Subject"] = f"📬 Nouveau contact MEDCINE-AI : {name}"
         
         html = f"""
         <html>
@@ -196,9 +196,9 @@ def contact():
         # En-tête
         st.markdown("""
             <div class='contact-header'>
-                <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">📬 Contactez Notre Équipe Médicale</h1>
+                <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">📬 Contacte L'équipe Médicale</h1>
                 <p style="font-size: 1.2rem; opacity: 0.9;">
-                    Une question ? Un projet ? Nous répondons sous 24h
+                    Une question ? Un projet ? Nous répondons dans les 24h
                 </p>
             </div>
         """, unsafe_allow_html=True)
@@ -236,10 +236,10 @@ def contact():
                 <div class='info-item'>
                     <div style="margin-right: 1rem;">🏥</div>
                     <div>
-                        <h4 style="margin: 0; color: var(--secondary);">Clinique MED-AI</h4>
+                        <h4 style="margin: 0; color: var(--secondary);">Clinique MEDCINE-AI</h4>
                         <p style="margin: 0.3rem 0 0; color: #666;">
-                            123 Rue de la Santé<br>
-                            Dakar, Sénégal
+                            800 Rue de la Santé<br>
+                            Thièno, Sénégal
                         </p>
                     </div>
                 </div>
